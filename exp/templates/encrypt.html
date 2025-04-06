@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Encrypt Message</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-image: url("{{ url_for('static', filename='encrypt.jpg') }}");
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            align-items: center;
+            display: flex;
+            justify-content: center;
+        } 
+    </style>
+    
+</head>
+<body>
+    <div class="container">      
+        <div class="two-column">
+            <div class="left-column">
+                <h1>🔐 Encrypt Your Message</h1>
+                    {% if error %}
+                    <p class="error">{{ error }}</p>
+                    {% elif success %}
+                    <p class="success">✅ Image encrypted successfully!</p>
+                    {% endif %}
+
+                <form method="POST" enctype="multipart/form-data" class="form">
+                    <label for="image">Select Image:</label>
+                    <input type="file" name="image" required><br>
+
+                    <label for="message">Message:</label>
+                    <textarea name="message" rows="4" required></textarea><br>
+
+                    <label for="password">Password:</label>
+                    <input type="password" name="password" required><br>
+
+                    <button type="submit">Encrypt</button>
+                </form>
+
+                <a href="/" class="back-link">← Back to Home</a>
+            </div>
+        </div>
+            <!-- Right Column: Image + Download Button -->
+            {% if success %}
+            <div class="right-column">
+                <div class="right-column {% if success %}show{% else %}hide{% endif %}" id="imagePreviewContainer">
+                    <img src="{{ url_for('download', filename=output_image) }}" class="preview" alt="Encrypted Image">
+                    <button type="submit"><a href="{{ url_for('download', filename=output_image) }}" class="download-btn" download>
+                        Download Encrypted Image
+                    </a></button>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    
+        <script>
+            function previewImage(event) {
+                const reader = new FileReader();
+                reader.onload = function(){
+                    const preview = document.getElementById("preview");
+                    const previewContainer = document.getElementById("imagePreviewContainer");
+                    
+                    preview.src = reader.result;
+                    preview.style.display = "block";
+                    previewContainer.style.display = "block";
+                };
+                reader.readAsDataURL(event.target.files[0]);
+            }
+        </script>
+</body>
+</html>
