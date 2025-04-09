@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Encrypt Message</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='logo.png') }}">
+
+
+    <style>
+        body {
+            background-image: url("{{ url_for('static', filename='encrypt.jpg') }}");
+        }
+
+        .main-wrapper {
+            display: flex;
+            width: 90%;
+            max-width: 1200px;
+            justify-content: space-between;
+            gap: 40px;
+        }
+
+        .left-column,
+        .right-column {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .preview {
+            max-width: 100%;
+            border-radius: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+        }
+
+        .download-btn {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .success, .error {
+            color: #f8d32b;
+            font-size: 16px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="main-wrapper">
+        <!-- Left Half: Form -->
+        <div class="container left-column">
+            <h1>🔐 Encrypt Your Message</h1>
+
+            {% if error %}
+                <p class="error">{{ error }}</p>
+            {% elif success %}
+                <p class="success">✅ Image encrypted successfully!</p>
+                <p class="success">🆔 Your Image ID: <span style="color: #00ffcc">{{ image_id }}</span></p>
+                <p class="success">🔐 Please save this ID safely for decryption!</p>
+            {% endif %}
+
+            <form method="POST" enctype="multipart/form-data" class="form">
+                <label for="image">Select Image:</label>
+                <input type="file" name="image" required><br>
+
+                <label for="message">Message:</label>
+                <textarea name="message" rows="4" required></textarea><br>
+
+                <label for="password">Password:</label>
+                <input type="password" name="password" required><br>
+
+                <button type="submit">Encrypt</button>
+            </form>
+
+            <a href="/" class="back-link">← Back to Home</a>
+        </div>
+
+        <!-- Right Half: Image Preview + Download -->
+        {% if success %}
+        <div class="container right-column">
+            <img src="{{ url_for('download', filename=output_image) }}" class="preview" alt="Encrypted Image">
+            <a href="{{ url_for('download', filename=output_image) }}" class="download-btn" download>
+                <button>⬇️ Download Encrypted Image</button>
+            </a>
+        </div>
+        {% endif %}
+    </div>
+</body>
+</html>
